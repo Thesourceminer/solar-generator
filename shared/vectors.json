@@ -1,0 +1,219 @@
+{
+  "status": [
+    {
+      "name": "demo_typical",
+      "valid": true,
+      "expect": {
+        "version": 1,
+        "flags": 1,
+        "seq": 42,
+        "battAge": 1,
+        "socPct": 87,
+        "battCentiVolts": 1328,
+        "battDeciAmps": 124,
+        "battMinutes": 120,
+        "chgAge": 1,
+        "solarWatts": 210,
+        "truckWatts": 0,
+        "chgDeciAmps": 160,
+        "invAge": 1,
+        "invBits": 1,
+        "invWatts": 340,
+        "circAge": 1,
+        "circOn": 37,
+        "circConfirmed": 37,
+        "circReady": 1,
+        "fanAge": 1,
+        "fanMode": 0,
+        "fanPct": 40,
+        "boxDeciC": 312,
+        "cutCountdownS": 0
+      },
+      "hex": "01012a00015730057c0078000100d2000000a00001015401012525010100280038010000"
+    },
+    {
+      "name": "all_unknown",
+      "valid": true,
+      "expect": {
+        "version": 1,
+        "flags": 0,
+        "seq": 0,
+        "battAge": 255,
+        "socPct": 255,
+        "battCentiVolts": 0,
+        "battDeciAmps": 0,
+        "battMinutes": 65535,
+        "chgAge": 255,
+        "solarWatts": 0,
+        "truckWatts": 0,
+        "chgDeciAmps": 0,
+        "invAge": 255,
+        "invBits": 0,
+        "invWatts": 0,
+        "circAge": 255,
+        "circOn": 0,
+        "circConfirmed": 0,
+        "circReady": 0,
+        "fanAge": 255,
+        "fanMode": 0,
+        "fanPct": 0,
+        "boxDeciC": 0,
+        "cutCountdownS": 0
+      },
+      "hex": "01000000ffff00000000ffffff00000000000000ff000000ff000000ff00000000000000"
+    },
+    {
+      "name": "negative",
+      "valid": true,
+      "expect": {
+        "version": 1,
+        "flags": 12,
+        "seq": 7,
+        "battAge": 2,
+        "socPct": 9,
+        "battCentiVolts": 1205,
+        "battDeciAmps": -25,
+        "battMinutes": 95,
+        "chgAge": 2,
+        "solarWatts": 0,
+        "truckWatts": 0,
+        "chgDeciAmps": -3,
+        "invAge": 2,
+        "invBits": 3,
+        "invWatts": 0,
+        "circAge": 2,
+        "circOn": 1,
+        "circConfirmed": 0,
+        "circReady": 1,
+        "fanAge": 2,
+        "fanMode": 1,
+        "fanPct": 100,
+        "boxDeciC": -50,
+        "cutCountdownS": 300
+      },
+      "hex": "010c07000209b504e7ff5f00020000000000fdff020300000201000102016400ceff2c01"
+    },
+    {
+      "name": "seq_wrap",
+      "valid": true,
+      "expect": {
+        "version": 1,
+        "flags": 1,
+        "seq": 65535,
+        "battAge": 0,
+        "socPct": 50,
+        "battCentiVolts": 1300,
+        "battDeciAmps": 0,
+        "battMinutes": 65535,
+        "chgAge": 0,
+        "solarWatts": 0,
+        "truckWatts": 0,
+        "chgDeciAmps": 0,
+        "invAge": 0,
+        "invBits": 0,
+        "invWatts": 0,
+        "circAge": 0,
+        "circOn": 0,
+        "circConfirmed": 0,
+        "circReady": 1,
+        "fanAge": 0,
+        "fanMode": 0,
+        "fanPct": 0,
+        "boxDeciC": 200,
+        "cutCountdownS": 0
+      },
+      "hex": "0101ffff003214050000ffff0000000000000000000000000000000100000000c8000000"
+    },
+    {
+      "name": "bad_version",
+      "valid": false,
+      "from": "demo_typical",
+      "version": 2,
+      "hex": "02012a00015730057c0078000100d2000000a00001015401012525010100280038010000"
+    },
+    {
+      "name": "short",
+      "valid": false,
+      "from": "demo_typical",
+      "truncate": 35,
+      "hex": "01012a00015730057c0078000100d2000000a000010154010125250101002800380100"
+    }
+  ],
+  "commands": [
+    {
+      "name": "circuit_3_on",
+      "hex": "010301",
+      "valid": true
+    },
+    {
+      "name": "circuit_1_off",
+      "hex": "010100",
+      "valid": true
+    },
+    {
+      "name": "inverter_off",
+      "hex": "0200",
+      "valid": true
+    },
+    {
+      "name": "fan_manual",
+      "hex": "0301",
+      "valid": true
+    },
+    {
+      "name": "fan_pct_55",
+      "hex": "0437",
+      "valid": true
+    },
+    {
+      "name": "release_10",
+      "hex": "050a",
+      "valid": true
+    },
+    {
+      "name": "keep_fridge",
+      "hex": "06",
+      "valid": true
+    },
+    {
+      "name": "cut_now",
+      "hex": "07",
+      "valid": true
+    },
+    {
+      "name": "bad_circuit_7",
+      "hex": "010701",
+      "valid": false
+    },
+    {
+      "name": "bad_circuit_0",
+      "hex": "010001",
+      "valid": false
+    },
+    {
+      "name": "bad_fan_pct_101",
+      "hex": "0465",
+      "valid": false
+    },
+    {
+      "name": "bad_release_0",
+      "hex": "0500",
+      "valid": false
+    },
+    {
+      "name": "bad_unknown_op",
+      "hex": "09",
+      "valid": false
+    },
+    {
+      "name": "bad_extra_byte",
+      "hex": "020100",
+      "valid": false
+    },
+    {
+      "name": "empty",
+      "hex": "",
+      "valid": false
+    }
+  ]
+}

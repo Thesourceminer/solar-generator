@@ -1,0 +1,5 @@
+firmware/.pio/
+.DS_Store
+*.p8
+.superpowers/
+__pycache__/

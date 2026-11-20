@@ -1,0 +1,72 @@
+# Firmware: shared vectors in step, host unit tests, then build the brain and display images (Linux runner, 1x minutes).
+name: Firmware
+
+on:
+  push:
+    paths: ['firmware/**', 'shared/**', '.github/workflows/firmware.yml']
+  pull_request:
+    paths: ['firmware/**', 'shared/**', '.github/workflows/firmware.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: firmware-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Test and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: firmware
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Shared vectors up to date
+        working-directory: .
+        run: python -I shared/gen_vectors.py --check
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-${{ runner.os }}-${{ hashFiles('firmware/platformio.ini') }}
+
+      - name: Install PlatformIO
+        run: pip install platformio==6.1.16
+
+      - name: Unit tests (host)
+        run: pio test -e native -v
+
+      - name: Build brain
+        run: pio run -e brain
+
+      - name: Build display
+        run: pio run -e display
+
+      - name: Collect images
+        run: |
+          for env in brain display; do
+            mkdir -p "$RUNNER_TEMP/out/$env"
+            cp .pio/build/$env/firmware.bin .pio/build/$env/bootloader.bin .pio/build/$env/partitions.bin "$RUNNER_TEMP/out/$env/"
+          done
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: brain-${{ github.run_number }}
+          path: ${{ runner.temp }}/out/brain
+          retention-days: 30
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: display-${{ github.run_number }}
+          path: ${{ runner.temp }}/out/display
+          retention-days: 30
